@@ -9,14 +9,28 @@
     body { background-color: #f4f6f9; color: #333; line-height: 1.6; }
     header { background: #2c3e50; color: #fff; padding: 1rem; text-align: center; }
     nav { display: flex; justify-content: center; background: #34495e; }
-    nav a { color: #fff; padding: 1rem; text-decoration: none; transition: background 0.3s; cursor: pointer; }
-    nav a:hover { background: #2c3e50; }
+    nav button {
+      background: none;
+      border: none;
+      color: #fff;
+      padding: 1rem 1.5rem;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s, color 0.3s;
+    }
+    nav button:hover { background: #2c3e50; }
+    nav button.active {
+      background: #1abc9c;
+      color: #fff;
+      border-radius: 4px;
+    }
     .container { max-width: 1200px; margin: 2rem auto; padding: 1rem; }
     .card { background: #fff; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
     h2 { margin-bottom: 1rem; color: #2c3e50; }
     canvas { width: 100% !important; height: 300px !important; }
     footer { text-align: center; padding: 1rem; background: #2c3e50; color: #fff; margin-top: 2rem; }
-    .hidden { display: none; }
+    .section { opacity: 0; transform: translateY(20px); transition: all 0.4s ease; display: none; }
+    .section.active { display: block; opacity: 1; transform: translateY(0); }
   </style>
 </head>
 <body>
@@ -26,14 +40,14 @@
   </header>
 
   <nav>
-    <a onclick="showSection('dashboard')">Dashboard</a>
-    <a onclick="showSection('students')">Students</a>
-    <a onclick="showSection('settings')">Settings</a>
+    <button id="btn-dashboard" onclick="showSection('dashboard', this)" class="active">Dashboard</button>
+    <button id="btn-students" onclick="showSection('students', this)">Students</button>
+    <button id="btn-settings" onclick="showSection('settings', this)">Settings</button>
   </nav>
 
   <div class="container">
     <!-- Dashboard Section -->
-    <div id="dashboard" class="section">
+    <div id="dashboard" class="section active">
       <div class="card">
         <h2>Course Completion Rate</h2>
         <canvas id="completionChart"></canvas>
@@ -45,7 +59,7 @@
     </div>
 
     <!-- Students Section -->
-    <div id="students" class="section hidden">
+    <div id="students" class="section">
       <div class="card">
         <h2>Student Details</h2>
         <table style="width:100%; border-collapse: collapse;">
@@ -60,7 +74,7 @@
     </div>
 
     <!-- Settings Section -->
-    <div id="settings" class="section hidden">
+    <div id="settings" class="section">
       <div class="card">
         <h2>Settings</h2>
         <form>
@@ -86,10 +100,17 @@
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // Section switcher
-    function showSection(sectionId) {
-      document.querySelectorAll('.section').forEach(sec => sec.classList.add('hidden'));
-      document.getElementById(sectionId).classList.remove('hidden');
+    // Section switcher with nav highlight
+    function showSection(sectionId, btn) {
+      // Hide all sections
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      // Show selected section
+      document.getElementById(sectionId).classList.add('active');
+
+      // Remove active class from all buttons
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      // Add active class to clicked button
+      btn.classList.add('active');
     }
 
     // Charts
